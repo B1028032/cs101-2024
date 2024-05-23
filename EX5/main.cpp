@@ -22,22 +22,31 @@ public:
 
         while (getline(file, line)) {
             if (isClassDeclaration(line)) {
-                cout << "class " << extractClassName(line) << endl;
                 classCount++;
             }
         }
 
+        // Output the number of classes first
         cout << classCount << " classes in main.cpp" << endl;
+
+        // Reset file pointer to beginning
+        file.clear();
+        file.seekg(0, ios::beg);
+
+        // Output class declarations
+        while (getline(file, line)) {
+            if (isClassDeclaration(line)) {
+                cout << "class " << extractClassName(line) << endl;
+            }
+        }
     }
 
 private:
     bool isClassDeclaration(const string& line) {
-        // Check if the line starts with "class" followed by space(s)
         return line.find("class ") == 0;
     }
 
     string extractClassName(const string& line) {
-        // Extract class name from the line
         size_t startPos = line.find("class ") + 6; // Length of "class " is 6
         size_t endPos = line.find_first_of(" {", startPos);
         return line.substr(startPos, endPos - startPos);
