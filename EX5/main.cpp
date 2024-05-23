@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <regex>
 #include <string>
 
 using namespace std;
@@ -20,17 +19,28 @@ public:
         ifstream file("main.cpp");
         string line;
         int classCount = 0;
-        regex classRegex("class\\s+(\\w+)\\s*\\{?");
 
         while (getline(file, line)) {
-            smatch match;
-            if (regex_search(line, match, classRegex)) {
-                cout << "class " << match[1] << endl;
+            if (isClassDeclaration(line)) {
+                cout << "class " << extractClassName(line) << endl;
                 classCount++;
             }
         }
 
         cout << classCount << " classes in main.cpp" << endl;
+    }
+
+private:
+    bool isClassDeclaration(const string& line) {
+        // Check if the line starts with "class" followed by space(s)
+        return line.find("class ") == 0;
+    }
+
+    string extractClassName(const string& line) {
+        // Extract class name from the line
+        size_t startPos = line.find("class ") + 6; // Length of "class " is 6
+        size_t endPos = line.find_first_of(" {", startPos);
+        return line.substr(startPos, endPos - startPos);
     }
 };
 
